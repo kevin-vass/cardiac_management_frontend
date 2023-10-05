@@ -16,7 +16,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Patient Management - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="CSS/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -26,6 +26,7 @@
 
     <!-- Custom styles for this template-->
     <link href="CSS/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="CSS/css/new-css.css" rel="stylesheet">
 
 </head>
 
@@ -59,12 +60,17 @@
         <hr class="sidebar-divider">
 
         <!-- Heading -->
-        <div class="sidebar-heading">
-            Interface
-        </div>
+<%--        <div class="sidebar-heading">--%>
+<%--            Interface--%>
+<%--        </div>--%>
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
+        <li class="nav-item active">
+            <a class="nav-link" href="tables.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Patient Info</span></a>
+        </li>
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-cog"></i>
