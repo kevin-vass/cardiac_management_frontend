@@ -16,7 +16,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Predict Heart Decease</title>
+    <title>Billing</title>
 
     <!-- Custom fonts for this template-->
     <link href="CSS/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -77,7 +77,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Patient Management:</h6>
                     <a class="collapse-item" href="PatientInfo.jsp">Patient Information</a>
-                    <a class="collapse-item" href="AddNewPatient.jsp">Add New Patient</a>
+                    <a class="collapse-item" href="AddNewUser.jsp">Add New Patient</a>
                 </div>
             </div>
         </li>
@@ -115,45 +115,44 @@
 
 
         <li class="nav-item">
-        <li class="nav-item active">
+<%--        <li class="nav-item active">--%>
             <a class="nav-link" href="PredictionUi.jsp">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Get Prediction</span>
             </a>
+<%--        </li>--%>
         </li>
-        </li>
-
         <hr class="sidebar-divider">
 
         <li class="nav-item">
-<%--        <li class="nav-item active">--%>
+        <li class="nav-item active">
             <a class="nav-link" href="BillingPage.jsp">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Billing</span>
             </a>
-<%--        </li>--%>
+        </li>
         </li>
 
         <li class="nav-item">
             <%--        <li class="nav-item active">--%>
-            <a class="nav-link" href="PredictionUi.jsp">
+            <a class="nav-link" href="AddNewUser.jsp">
                 <i class="fas fa-fw fa-wrench"></i>
                 <span>Add New User</span>
             </a>
             <%--        </li>--%>
         </li>
         <%--            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">--%>
-            <%--                <div class="bg-white py-2 collapse-inner rounded">--%>
-            <%--                    <h6 class="collapse-header">Login Screens:</h6>--%>
-            <%--                    <a class="collapse-item" href="login.html">Login</a>--%>
-            <%--                    <a class="collapse-item" href="register.html">Register</a>--%>
-            <%--                    <a class="collapse-item" href="forgot-password.html">Forgot Password</a>--%>
-            <%--                    <div class="collapse-divider"></div>--%>
-            <%--                    <h6 class="collapse-header">Other Pages:</h6>--%>
-            <%--                    <a class="collapse-item" href="404.html">404 Page</a>--%>
-            <%--                    <a class="collapse-item" href="blank.html">Blank Page</a>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
+        <%--                <div class="bg-white py-2 collapse-inner rounded">--%>
+        <%--                    <h6 class="collapse-header">Login Screens:</h6>--%>
+        <%--                    <a class="collapse-item" href="login.html">Login</a>--%>
+        <%--                    <a class="collapse-item" href="register.html">Register</a>--%>
+        <%--                    <a class="collapse-item" href="forgot-password.html">Forgot Password</a>--%>
+        <%--                    <div class="collapse-divider"></div>--%>
+        <%--                    <h6 class="collapse-header">Other Pages:</h6>--%>
+        <%--                    <a class="collapse-item" href="404.html">404 Page</a>--%>
+        <%--                    <a class="collapse-item" href="blank.html">Blank Page</a>--%>
+        <%--                </div>--%>
+        <%--            </div>--%>
 
 
         <!-- Nav Item - Charts -->
@@ -407,7 +406,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-<%--                    <span>Copyright &copy; Your Website 2020</span>--%>
+                    <%--                    <span>Copyright &copy; Your Website 2020</span>--%>
                 </div>
             </div>
         </footer>
