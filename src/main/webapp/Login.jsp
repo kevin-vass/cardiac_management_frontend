@@ -6,6 +6,16 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
+
+<%
+    // Check if the user has an active session
+    HttpSession userSession = request.getSession(false);
+    if (userSession == null || userSession.getAttribute("email") == null) {
+        // User is not authenticated, redirect to the login page
+        response.sendRedirect("Login.jsp");
+    }
+%>
 <html lang="en">
 
 <head>
@@ -49,15 +59,15 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                 </div>
-                                <form class="user">
+                                <form class="user" action="${pageContext.request.contextPath}/login" method="post">
                                     <div class="form-group">
                                         <input type="email" class="form-control form-control-user"
-                                               id="exampleInputEmail" aria-describedby="emailHelp"
+                                               id="txtloginemail" aria-describedby="emailHelp" name="email"
                                                placeholder="Enter Email Address...">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                               id="exampleInputPassword" placeholder="Password">
+                                        <input type="password" class="form-control form-control-user" name="password"
+                                               id="txtloginpassword" placeholder="Password">
                                     </div>
                                     <div class="form-group">
 <%--                                        <div class="custom-control custom-checkbox small">--%>
@@ -66,9 +76,10 @@
 <%--                                                Me</label>--%>
 <%--                                        </div>--%>
                                     </div>
-                                    <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                        Login
-                                    </a>
+                                    <button type="submit" id="idLogin" class="btn btn-primary btn-user btn-block">Login</button>
+<%--                                    <a href="index.html" class="btn btn-primary btn-user btn-block">--%>
+<%--                                        Login--%>
+<%--                                    </a>--%>
                                     <hr>
 <%--                                    <a href="index.html" class="btn btn-google btn-user btn-block">--%>
 <%--                                        <i class="fab fa-google fa-fw"></i> Login with Google--%>

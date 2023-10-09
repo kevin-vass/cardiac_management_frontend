@@ -1,11 +1,15 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Study
-  Date: 10/3/2023
-  Time: 11:18 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
+
+<%
+    // Check if the user has an active session
+    HttpSession userSession = request.getSession(false);
+    if (userSession == null || userSession.getAttribute("email") == null) {
+        // User is not authenticated, redirect to the login page
+        response.sendRedirect("Login.jsp");
+    }
+%>
+
 <html lang="en">
 
 <head>
@@ -379,7 +383,7 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -760,7 +764,10 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <form action="LogoutServlet" method="post">
+                    <input type="submit" value="Logout" class="btn btn-primary">
+<%--                <a class="btn btn-primary">Logout</a>--%>
+                </form>
             </div>
         </div>
     </div>
