@@ -8,6 +8,8 @@
         // User is not authenticated, redirect to the login page
         response.sendRedirect("Login.jsp");
     }
+
+
 %>
 
 <html lang="en">
@@ -789,6 +791,17 @@
 <!-- Page level custom scripts -->
 <script src="js/demo/chart-area-demo.js"></script>
 <script src="js/demo/chart-pie-demo.js"></script>
+
+<script>
+    // Check if the URL contains a query parameter indicating a successful login
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginSuccess = urlParams.get("loginSuccess");
+
+    if (loginSuccess === "true") {
+        // Display an alert for a successful login
+        alert("Login Successful");
+    }
+</script>
 
 </body>
 

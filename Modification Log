@@ -5,3 +5,4 @@ Tag                 Date                    Description
 003                 2023-10-05              Created the login, patient-info ui parts
 004                 2023-10-06              link all the front end components correctly
 005                 2023-10-09              Added the login and logout, validate all the pages with session
+006                 2023-10-11              Added the Heart Decease prediction for the web application

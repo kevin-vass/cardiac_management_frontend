@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 @WebServlet(name = "login", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -22,22 +23,11 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         // Check if email and password fields are not empty
-        if (email == null || email.trim().isEmpty()) {
+        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<script>alert('Please enter email');</script>");
-            out.println("<script>window.location.href='Login.jsp';</script>");
-            out.println("</body></html>");
-            out.close();
-            return;
-        }
-
-        if (password == null || password.trim().isEmpty()) {
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println("<html><body>");
-            out.println("<script>alert('Please enter password');</script>");
+            out.println("<script>alert('Please enter both email and password');</script>");
             out.println("<script>window.location.href='Login.jsp';</script>");
             out.println("</body></html>");
             out.close();
@@ -63,67 +53,46 @@ public class LoginServlet extends HttpServlet {
         // Read the response from the backend resource file
         int responseCode = connection.getResponseCode();
         String responseBody = "";
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            // Success
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        InputStream inputStream = connection.getInputStream();
+        if (inputStream != null) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = br.readLine()) != null) {
                 responseBody += line;
             }
             br.close();
-        } else {
-            // Error
-            InputStream inputStream = connection.getInputStream();
-            if (inputStream != null) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    responseBody += line;
-                }
-                br.close();
-            }
-
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println("<html><body>");
-            out.println("<script>alert('Login Failed: " + responseBody + "');</script>"); // alert message with error code
-            out.println("<script>window.location.href='Login.jsp';</script>"); // stay on the same page
-            out.println("</body></html>");
-            out.close();
         }
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+
         if (responseCode == HttpURLConnection.HTTP_OK) {
             // Success
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email); // set session attribute
             session.setMaxInactiveInterval(30 * 60);
-            response.setContentType("text/html");
             out.println("<html><body>");
             out.println("<script>alert('Login Successful');</script>"); // alert message
-            response.sendRedirect("Dashboard.jsp"); // redirect to admin page
+            response.sendRedirect("Dashboard.jsp?loginSuccess=true"); // redirect to admin page
             out.println("</body></html>");
-            out.close();
-        }else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             // Unauthorized (401)
             // Handle authentication failure (e.g., incorrect email/password)
-            // Display an error message and redirect to the login page
-            response.setContentType("text/html");
-            out = response.getWriter();
+            // Display an error message and stay on the login page
             out.println("<html><body>");
             out.println("<script>alert('Login Failed: Incorrect email or password');</script>");
-            out.println("<script>window.location.href='Login.jsp';</script>");
+            response.sendRedirect("Login.jsp?loginSuccess=false&errorMessage=" + URLEncoder.encode("Invalid email or password", "UTF-8"));
             out.println("</body></html>");
-            out.close();
-        }
-        else {
-            // Error
+        } else {
+            // Other errors
             out.println("<html><body>");
             out.println("<h1>Login Failed</h1>");
             out.println("<p>" + responseBody + "</p>");
             out.println("</body></html>");
-            response.sendRedirect("Login.jsp.jsp");
+            // Other errors
+            response.sendRedirect("Login.jsp?errorMessage=" + URLEncoder.encode(responseBody, "UTF-8"));
+
         }
         out.close();
     }

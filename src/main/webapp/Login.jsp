@@ -6,16 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="jakarta.servlet.http.HttpSession" %>
 
-<%
-    // Check if the user has an active session
-    HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("email") == null) {
-        // User is not authenticated, redirect to the login page
-        response.sendRedirect("Login.jsp");
-    }
-%>
 <html lang="en">
 
 <head>
@@ -105,6 +96,8 @@
 
     </div>
 
+
+
 </div>
 
 <!-- Bootstrap core JavaScript-->
@@ -116,6 +109,25 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+
+<script>
+    // Check if the URL contains a query parameter indicating a successful login
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginSuccess = urlParams.get("loginSuccess");
+    const errorMessage = urlParams.get("errorMessage");
+
+    if (loginSuccess === "true") {
+        // Display an alert for a successful login
+        alert("Login Successful");
+    } else if (loginSuccess === "false") {
+        // Display an alert for incorrect email or password
+        alert("Email or password is incorrect");
+    } else if (errorMessage) {
+        // Display an alert with the error message
+        alert("Login Failed: " + decodeURIComponent(errorMessage));
+    }
+</script>
+
 
 </body>
 
