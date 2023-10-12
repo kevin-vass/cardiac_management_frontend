@@ -19,6 +19,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -405,11 +406,167 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
+                <h1 class="h3 mb-4 text-gray-800">Add New User</h1>
 
+
+
+                <form action="${pageContext.request.contextPath}/management-registration" method="post" onsubmit="return validateForm()">
+                    <!-- Text Fields -->
+                    <div class="form-group">
+                        <label for="field1">E-mail:</label>
+                        <input type="text" class="form-control" id="field1" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field4">Name:</label>
+                        <input type="text" class="form-control" id="field4" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field2">Password:</label>
+                        <input type="password" class="form-control" id="field2" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field3">Confirm Password:</label>
+                        <input type="password" class="form-control" id="field3" name="c_password" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="register-user-button" class="btn btn-primary">Create</button>
+                </form>
+
+                <script>
+                    function validateForm() {
+                        var password = document.getElementById("field2").value;
+                        var confirmPassword = document.getElementById("field3").value;
+
+                        if (password !== confirmPassword) {
+                            alert("Password and Confirm Password must match.");
+                            return false; // Prevent form submission
+                        }
+
+                        return true; // Allow form submission
+                    }
+                </script>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Existing Users</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Email</th>
+                                    <th>Password</th>
+                                    <th>Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="userTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Your existing HTML and modal code -->
+
+                <script>
+                    $(document).ready(function() {
+                        var deleteUserId; // Variable to store the user ID to be deleted
+
+                        // Function to show the delete modal and set the user ID to be deleted
+                        function showDeleteModal(userId) {
+                            $('#deleteModal').modal('show');
+                            deleteUserId = userId; // Set the user ID to be deleted
+                        }
+
+                        // Function to delete the user when the "Delete" button in the modal is clicked
+                        function deleteConfirmedUser() {
+                            // Send the delete request to the backend with the stored user ID
+                            $.ajax({
+                                url: 'http://localhost:8080/BackendComponents_war_exploded/api/management/delete/' + deleteUserId,
+                                method: 'DELETE',
+                                success: function(response) {
+                                    // Handle successful deletion (e.g., remove the row from the table)
+                                    console.log(response);
+                                    // Reload the table or update it as needed
+                                    // For example, you can remove the row from the table:
+                                    $('#userRow_' + deleteUserId).remove();
+                                    $('#deleteModal').modal('hide'); // Close the modal
+                                },
+                                error: function(error) {
+                                    console.error('Error deleting user: ' + error);
+                                    $('#deleteModal').modal('hide'); // Close the modal
+                                }
+                            });
+                        }
+
+                        // Function to show the Edit Modal with user data
+                        function showEditModal(user) {
+                            $('#field5edit').val(user.id);
+                            $('#field1edit').val(user.email); // Set the email field in the Edit Modal
+                            $('#field4edit').val(user.name); // Set the name field in the Edit Modal
+
+                            // Show the Edit Modal
+                            $('#EditModal').modal('show');
+                        }
+
+                        // Fetch user data from the backend
+                        $.ajax({
+                            url: 'http://localhost:8080/BackendComponents_war_exploded/api/management/view',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function(data) {
+                                // Clear existing table rows
+                                $('#userTableBody').empty();
+
+                                // Populate the table with data and add a click event handler for "Edit" buttons
+                                data.forEach(function(user) {
+                                    var row = '<tr id="userRow_' + user.id + '">' +
+                                        '<td>' + user.id + '</td>' +
+                                        '<td>' + user.email + '</td>' +
+                                        '<td>' + user.password + '</td>' +
+                                        '<td>' + user.name + '</td>' +
+                                        '<td><button class="btn btn-secondary btn-sm editButton" data-id="' + user.id + '">Edit</button></td>' +
+                                        '<td><button class="btn btn-danger btn-sm deleteButton" data-id="' + user.id + '">Delete</button></td>' +
+                                        '</tr>';
+                                    $('#userTableBody').append(row);
+                                });
+
+                                // Add a click event handler for the "Delete" buttons
+                                $('.deleteButton').click(function() {
+                                    var id = $(this).data('id');
+                                    if (confirm('Are you sure you want to delete this user?')) {
+                                        deleteUserId = id;
+                                        deleteConfirmedUser();
+                                    }
+                                });
+
+                                // Add a click event handler for the "Edit" buttons
+                                $('.editButton').click(function() {
+                                    var id = $(this).data('id');
+                                    var user = data.find(u => u.id === id); // Find the user data for the given ID
+                                    if (user) {
+                                        showEditModal(user); // Show the Edit Modal with user data
+                                    }
+                                });
+                            },
+                            error: function(error) {
+                                console.log('Error fetching data: ' + error);
+                            }
+                        });
+                    });
+                </script>
+
+
+
+
+
+
+                <!-- /.container-fluid -->
             </div>
-            <!-- /.container-fluid -->
-
         </div>
         <!-- End of Main Content -->
 
@@ -433,6 +590,51 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
+<!-- Edit Modal-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelEdit"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelEdit">Edit Record</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="${pageContext.request.contextPath}/management-edit" method="post">
+                    <!-- Text Fields -->
+                    <div class="form-group">
+                        <label for="field5edit">Id:</label>
+                        <input type="text" class="form-control" id="field5edit" name="idedit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field1edit">E-mail:</label>
+                        <input type="text" class="form-control" id="field1edit" name="emailedit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field4edit">Name:</label>
+                        <input type="text" class="form-control" id="field4edit" name="nameedit" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" id="confirmEdit" type="submit">Update</button>
+                    </div>
+                    <script>
+                        $(document).ready(function() {
+                            // Disable the "Id" input field for editing
+                            $('#field5edit').prop('readonly', true);
+                        });
+                    </script>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -466,6 +668,25 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the user's email from the session storage
+        var sessionEmail = '<%= session.getAttribute("email") %>'; // Use "email" instead of "userEmail"
+
+        // Get the "Add New User" link
+        var addNewUserLink = document.querySelector('a[href="AddNewUser.jsp"]');
+
+        if (sessionEmail !== "admin@admin") {
+            // If the session email is not "admin@admin," disable the link
+            addNewUserLink.classList.add("disabled");
+            addNewUserLink.addEventListener("click", function(e) {
+                e.preventDefault(); // Prevent the link from navigating
+                alert("You are not authorized to access this page.");
+            });
+        }
+    });
+</script>
 
 </body>
 

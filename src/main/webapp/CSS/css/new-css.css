@@ -19,3 +19,9 @@
     background-image: linear-gradient(180deg, rgba(223, 78, 78, 0.62) 10%, rgba(190, 34, 34, 0.64) 100%);
     background-size: cover
 }
+
+.btn-primary-edit{
+    background-color: rgba(78, 223, 218, 0.47);
+    background-image: linear-gradient(180deg, rgba(78, 223, 218, 0.47) 10%, rgba(78, 223, 218, 0.82) 100%);
+    background-size: cover
+}

@@ -110,7 +110,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="PredictionUi.jsp">
+            <a class="nav-link" href="AddNewUser.jsp">
                 <i class="fas fa-fw fa-wrench"></i>
                 <span>Add New User</span>
             </a>
@@ -327,8 +327,12 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     // Update the prediction result on the web page
-                                    if (data.result) {
-                                        predictionResultDiv.textContent = "Prediction Result: " + data.result;
+                                    if (data.result !== undefined) {
+                                        // Format the probability to two decimal points
+                                        const formattedProbability = data.probability_positive.toFixed(2);
+
+                                        // Display the prediction result and probability
+                                        predictionResultDiv.textContent = "Prediction Result: " + data.result + " (Probability: " + formattedProbability + "%)";
                                     } else {
                                         predictionResultDiv.textContent = "Prediction Result: Unknown";
                                     }
@@ -337,6 +341,7 @@
                                     // Handle any errors here
                                     predictionResultDiv.textContent = "Error occurred while making the prediction.";
                                 });
+
                         });
                     });
                 </script>
@@ -404,6 +409,26 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the user's email from the session storage
+        var sessionEmail = '<%= session.getAttribute("email") %>'; // Use "email" instead of "userEmail"
+
+        // Get the "Add New User" link
+        var addNewUserLink = document.querySelector('a[href="AddNewUser.jsp"]');
+
+        if (sessionEmail !== "admin@admin") {
+            // If the session email is not "admin@admin," disable the link
+            addNewUserLink.classList.add("disabled");
+            addNewUserLink.addEventListener("click", function(e) {
+                e.preventDefault(); // Prevent the link from navigating
+                alert("You are not authorized to access this page.");
+            });
+        }
+    });
+</script>
+
 
 </body>
 

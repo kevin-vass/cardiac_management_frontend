@@ -466,6 +466,27 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the user's email from the session storage
+        var sessionEmail = '<%= session.getAttribute("email") %>'; // Use "email" instead of "userEmail"
+
+        // Get the "Add New User" link
+        var addNewUserLink = document.querySelector('a[href="AddNewUser.jsp"]');
+
+        if (sessionEmail !== "admin@admin") {
+            // If the session email is not "admin@admin," disable the link
+            addNewUserLink.classList.add("disabled");
+            addNewUserLink.addEventListener("click", function(e) {
+                e.preventDefault(); // Prevent the link from navigating
+                alert("You are not authorized to access this page.");
+            });
+        }
+    });
+</script>
+
+
+
 </body>
 
 </html>

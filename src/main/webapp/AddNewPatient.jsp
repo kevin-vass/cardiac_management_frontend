@@ -405,11 +405,48 @@
       <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
+        <h1 class="h3 mb-4 text-gray-800">Add New Patient</h1>
 
+
+
+        <form action="${pageContext.request.contextPath}/patient-registration" method="post">
+          <!-- Text Fields -->
+          <div class="form-group">
+            <label for="field1">Name:</label>
+            <input type="text" class="form-control" id="field1" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="field2">Address:</label>
+            <input type="text" class="form-control" id="field2" name="address" required>
+          </div>
+          <div class="form-group">
+            <label for="field3">Contact (Telephone Number):</label>
+            <input type="text" class="form-control" id="field3" name="contact" required oninput="validateInput(this)">
+          </div>
+          <script>
+            function validateInput(inputElement) {
+              // Remove any non-numeric characters
+              inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+            }
+          </script>
+          <div class="form-group">
+            <label for="birthdate">Birthdate:</label>
+            <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+          </div>
+          <div class="form-group">
+            <label for="spinner1">Gender:</label>
+            <select class="form-control" id="spinner1" name="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="register-patient-button" class="btn btn-primary">Create</button>
+        </form>
+
+        <!-- /.container-fluid -->
       </div>
-      <!-- /.container-fluid -->
-
     </div>
     <!-- End of Main Content -->
 
@@ -466,6 +503,27 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the user's email from the session storage
+    var sessionEmail = '<%= session.getAttribute("email") %>'; // Use "email" instead of "userEmail"
+
+    // Get the "Add New User" link
+    var addNewUserLink = document.querySelector('a[href="AddNewUser.jsp"]');
+
+    if (sessionEmail !== "admin@admin") {
+      // If the session email is not "admin@admin," disable the link
+      addNewUserLink.classList.add("disabled");
+      addNewUserLink.addEventListener("click", function(e) {
+        e.preventDefault(); // Prevent the link from navigating
+        alert("You are not authorized to access this page.");
+      });
+    }
+  });
+</script>
+
+
 
 </body>
 

@@ -6,3 +6,4 @@ Tag                 Date                    Description
 004                 2023-10-06              link all the front end components correctly
 005                 2023-10-09              Added the login and logout, validate all the pages with session
 006                 2023-10-11              Added the Heart Decease prediction for the web application
+007                 2023-10-12              Added all the functions for user in view, insert, edit and delete
