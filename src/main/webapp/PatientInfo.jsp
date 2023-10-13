@@ -19,14 +19,14 @@
 <html lang="en">
 
 <head>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>Patient Information</title>
 
     <!-- Custom fonts for this template -->
     <link href="CSS/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -93,6 +93,7 @@
 <%--        <li class="nav-item active">--%>
                 <a class="collapse-item  nav-item active" href="PatientInfo.jsp">Patient Information</a>
                 <a class="collapse-item" href="AddNewPatient.jsp">Add New Patient</a>
+                <a class="collapse-item" href="ViewClinicData.jsp">View Clinic Data</a>
 <%--    </li>--%>
             </div>
         </div>
@@ -432,46 +433,136 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Registered Patients</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
+                                    <th>Patient ID</th>
                                     <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
+                                    <th>Address</th>
+                                    <th>Telephone</th>
                                     <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>Gender</th>
+                                    <th>Edit</th>
+                                    <th>Add Clinic Records</th>
                                 </tr>
                                 </thead>
-<%--                                <tfoot>--%>
-<%--                                <tr>--%>
-<%--                                    <th>Name</th>--%>
-<%--                                    <th>Position</th>--%>
-<%--                                    <th>Office</th>--%>
-<%--                                    <th>Age</th>--%>
-<%--                                    <th>Start date</th>--%>
-<%--                                    <th>Salary</th>--%>
-<%--                                </tr>--%>
-<%--                                </tfoot>--%>
-                                <tbody>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
-                                    <td>2011/04/25</td>
-                                    <td>$320,800</td>
-                                </tr>
-
+                                <tbody id="patientTableBody">
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <script>
+                    $(document).ready(function() {
+                        // var deleteUserId; // Variable to store the user ID to be deleted
+                        //
+                        // // Function to show the delete modal and set the user ID to be deleted
+                        // function showDeleteModal(userId) {
+                        //     $('#deleteModal').modal('show');
+                        //     deleteUserId = userId; // Set the user ID to be deleted
+                        // }
+                        //
+                        // // Function to delete the user when the "Delete" button in the modal is clicked
+                        // function deleteConfirmedUser() {
+                        //     // Send the delete request to the backend with the stored user ID
+                        //     $.ajax({
+                        //         url: 'http://localhost:8080/BackendComponents_war_exploded/api/management/delete/' + deleteUserId,
+                        //         method: 'DELETE',
+                        //         success: function(response) {
+                        //             // Handle successful deletion (e.g., remove the row from the table)
+                        //             console.log(response);
+                        //             // Reload the table or update it as needed
+                        //             // For example, you can remove the row from the table:
+                        //             $('#userRow_' + deleteUserId).remove();
+                        //             $('#deleteModal').modal('hide'); // Close the modal
+                        //         },
+                        //         error: function(error) {
+                        //             console.error('Error deleting user: ' + error);
+                        //             $('#deleteModal').modal('hide'); // Close the modal
+                        //         }
+                        //     });
+                        // }
+
+                        function showAddClinicRecordsModal(patient) {
+                            // Set the age, sex, and ID fields in the "Add Clinic Records" modal
+                            $('#field1').val(patient.birthdate);  // Replace 'addAge' with the correct ID
+                            $('#field6').val(patient.gender);  // Replace 'addSex' with the correct ID
+                            $('#field7').val(patient.patient_id);  // Replace 'addId' with the correct ID
+                            // Show the "Add Clinic Records" modal
+                            $('#addClinicRecordsModal').modal('show');
+                        }
+
+                        // Function to show the Edit Modal with user data
+                        function showEditModal(patient) {
+                            $('#field5edit').val(patient.patient_id);
+                            $('#field1edit').val(patient.name); // Set the email field in the Edit Modal
+                            $('#field4edit').val(patient.address); // Set the name field in the Edit Modal
+                            $('#field6edit').val(patient.telephone);
+
+                            // Show the Edit Modal
+                            $('#EditModal').modal('show');
+                        }
+                        // Fetch user data from the backend
+                        $.ajax({
+                            url: 'http://localhost:8080/BackendComponents_war_exploded/api/patient/view',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function(data) {
+                                // Clear existing table rows
+                                $('#patientTableBody').empty();
+
+                                // Populate the table with data and add a click event handler for "Edit" buttons
+                                data.forEach(function(patient) {
+                                    var row = '<tr id="userRow_' + patient.id + '">' +
+                                        '<td>' + patient.patient_id + '</td>' +
+                                        '<td>' + patient.name + '</td>' +
+                                        '<td>' + patient.address + '</td>' +
+                                        '<td>' + patient.telephone + '</td>' +
+                                        '<td>' + patient.birthdate + '</td>' +
+                                        '<td>' + patient.gender + '</td>' +
+                                        '<td><button class="btn btn-secondary btn-sm editButton" data-id="' + patient.patient_id + '">Edit</button></td>' +
+                                        '<td><button class="btn btn-danger btn-sm addButton" data-target="#addClinicRecordsModal" data-toggle="modal" data-id="' + patient.patient_id + '">Add</button></td>' +
+                                        '</tr>';
+                                    $('#patientTableBody').append(row);
+                                });
+
+                                $('.addButton').click(function() {
+                                    var id = $(this).data('id');
+                                    var patient = data.find(p => p.patient_id === id);
+                                    if (patient) {
+                                        showAddClinicRecordsModal(patient);
+                                    }
+                                });
+
+                                // Add a click event handler for the "Delete" buttons
+                                // $('.deleteButton').click(function() {
+                                //     var id = $(this).data('id');
+                                //     if (confirm('Are you sure you want to delete this user?')) {
+                                //         deleteUserId = id;
+                                //         deleteConfirmedUser();
+                                //     }
+                                // });
+
+                                // Add a click event handler for the "Edit" buttons
+                                $('.editButton').click(function() {
+                                    var id = $(this).data('id');
+                                    var patient = data.find(p => p.patient_id === id); // Find the user data for the given ID
+                                    if (patient) {
+                                        showEditModal(patient); // Show the Edit Modal with user data
+                                    }
+                                });
+                            },
+                            error: function(error) {
+                                console.log('Error fetching data: ' + error);
+                            }
+                        });
+                    });
+                </script>
 
             </div>
             <!-- /.container-fluid -->
@@ -499,6 +590,178 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
+
+<!-- Add clinic data Modal-->
+<div class="modal fade" id="addClinicRecordsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelAddClinicData" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelAddClinicData">Edit Record</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="${pageContext.request.contextPath}/clinicdata-registration" method="post">
+                    <!-- Text Fields -->
+                    <div class="form-group">
+                        <label for="field1">Patient ID:</label>
+                        <input type="text" class="form-control" id="field7" name="id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field1">Age:</label>
+                        <input type="text" class="form-control" id="field1" name="age" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field6">Sex:</label>
+                        <input type="text" class="form-control" id="field6" name="sex" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="spinner2">Chest Pain Type:</label>
+                        <label for="spinner2">ASY:Asymptomatic / ATA:Atypical Angina / NAP:Non-Anginal pain / TA:Typical Angina</label>
+                        <select class="form-control" id="spinner2" name="pain_type">
+                            <option value="ASY">ASY</option>
+                            <option value="ATA">ATA</option>
+                            <option value="NAP">NAP</option>
+                            <option value="TA">TA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="field2">Resting BP:</label>
+                        <input type="text" class="form-control" id="field2" name="resting_bp" required oninput="validateNumericInput(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="field3">Cholesterol:</label>
+                        <input type="text" class="form-control" id="field3" name="cholesterol" required oninput="validateNumericInput(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="spinner3">Fasting BS:</label>
+                        <label for="spinner3">1:if FastingBS > 120 mg/dl / 0:Otherwise</label>
+                        <select class="form-control" id="spinner3" name="fasting_bs">
+                            <option value="1">1</option>
+                            <option value="0">0</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="spinner4">Resting ECG:</label>
+                        <label for="spinner4">LVH: Shoving Probable or definite left ventricular hypertrophy / Normal:Normal / ST:Having ST-T Wave abnormality</label>
+                        <select class="form-control" id="spinner4" name="resting_ecg">
+                            <option value="LVH">LVH</option>
+                            <option value="Normal">Normal</option>
+                            <option value="ST">ST</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="field4">Max HR:</label>
+                        <input type="text" class="form-control" id="field4" name="max_hr" required oninput="validateNumericInput(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="spinner5">Exercise Angina:</label>
+                        <label for="spinner5">N:No / Y:Yes</label>
+                        <select class="form-control" id="spinner5" name="exercise_angina">
+                            <option value="N">N</option>
+                            <option value="Y">Y</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="field5">Old peak:</label>
+                        <input type="text" class="form-control" id="field5" name="oldpeak" required oninput="validateDecimalInput(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="spinner6">ST Slope:</label>
+                        <label for="spinner6">Down:Downsloping / Flat:Flat / Up:Upsloping</label>
+                        <select class="form-control" id="spinner6" name="st_slope">
+                            <option value="Down">Down</option>
+                            <option value="Flat">Flat</option>
+                            <option value="Up">Up</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" id="confirmAdd" type="submit">Add</button>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            // Disable the "Id" input field for editing
+                            $('#field7').prop('readonly', true);
+                            $('#field1').prop('readonly', true);
+                            $('#field6').prop('readonly', true);
+                        });
+
+                        function validateNumericInput(inputElement) {
+                            // Remove any non-numeric characters
+                            inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+                        }
+
+                        function validateDecimalInput(inputElement) {
+                            // Remove any non-numeric and non-decimal characters
+                            inputElement.value = inputElement.value.replace(/[^0-9.]/g, '');
+                        }
+                    </script>
+                </form>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal-->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelEdit"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelEdit">Edit Record</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="${pageContext.request.contextPath}/patient-edit" method="post">
+                    <!-- Text Fields -->
+                    <div class="form-group">
+                        <label for="field5edit">Id:</label>
+                        <input type="text" class="form-control" id="field5edit" name="idedit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field1edit">Name:</label>
+                        <input type="text" class="form-control" id="field1edit" name="nameedit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field4edit">Address:</label>
+                        <input type="text" class="form-control" id="field4edit" name="addressedit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="field6edit">Telephone:</label>
+                        <input type="text" class="form-control" id="field6edit" name="telephoneedit" required oninput="validateInput(this)">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" id="confirmEdit" type="submit">Update</button>
+                    </div>
+                    <script>
+                        $(document).ready(function() {
+                            // Disable the "Id" input field for editing
+                            $('#field5edit').prop('readonly', true);
+                        });
+                        function validateInput(inputElement) {
+                            // Remove any non-numeric characters
+                            inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+                        }
+                    </script>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -533,12 +796,12 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<script src="CSS/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="CSS/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<%--<!-- Page level plugins -->--%>
+<%--<script src="CSS/vendor/datatables/jquery.dataTables.min.js"></script>--%>
+<%--<script src="CSS/vendor/datatables/dataTables.bootstrap4.min.js"></script>--%>
 
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+<%--<!-- Page level custom scripts -->--%>
+<%--<script src="js/demo/datatables-demo.js"></script>--%>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

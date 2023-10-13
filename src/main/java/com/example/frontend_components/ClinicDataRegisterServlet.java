@@ -1,5 +1,6 @@
 package com.example.frontend_components;
 
+
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,54 +13,69 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@WebServlet(name = "PatientRegistrationServlet", value = "/patient-registration")
-public class PatientRegistrationServlet extends HttpServlet {
+@WebServlet(name = "ClinicDataRegisterServlet", value = "/clinicdata-registration")
+public class ClinicDataRegisterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
 
         // Extract the category details from the form submission
-        String patientName = request.getParameter("name");
-        String address = request.getParameter("address");
-        Integer phone = Integer.valueOf(request.getParameter("contact"));
-        String birthdate = request.getParameter("birthdate");
-        String gender = request.getParameter("gender");
+        String patientId = request.getParameter("id");
+        String age = request.getParameter("age");
+        String sex = request.getParameter("sex");
+        String painType = request.getParameter("pain_type");
+        Double restingBp = Double.valueOf(request.getParameter("resting_bp"));
+        Double cholesterol = Double.valueOf(request.getParameter("cholesterol"));
+        String fastingBs = request.getParameter("fasting_bs");
+        String restingEcg = request.getParameter("resting_ecg");
+        Double maxHr = Double.valueOf(request.getParameter("max_hr"));
+        String exerciseAngina = request.getParameter("exercise_angina");
+        Double oldPeak = Double.valueOf(request.getParameter("oldpeak"));
+        String stSlope = request.getParameter("st_slope");
 
         // Check if both fields are not empty
-        if (patientName == null) {
+        if (patientId == null) {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
             out.println("<script>alert('All fields are required');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
             return;
         }
 
         // Create a JSON object containing the category details
-        JsonObject categoryJson = new JsonObject();
-        categoryJson.addProperty("name", patientName);
-        categoryJson.addProperty("address", address);
-        categoryJson.addProperty("telephone", phone);
-        categoryJson.addProperty("birthdate", birthdate);
-        categoryJson.addProperty("gender", gender);
+        JsonObject clinicDataJson = new JsonObject();
+        clinicDataJson.addProperty("patient_id", patientId);
+        clinicDataJson.addProperty("age", age);
+        clinicDataJson.addProperty("sex", sex);
+        clinicDataJson.addProperty("chest_pain", painType);
+        clinicDataJson.addProperty("resting_bp", restingBp);
+        clinicDataJson.addProperty("cholesterol", cholesterol);
+        clinicDataJson.addProperty("fasting_bs", fastingBs);
+        clinicDataJson.addProperty("resting_ecg", restingEcg);
+        clinicDataJson.addProperty("max_hr", maxHr);
+        clinicDataJson.addProperty("exercise_angina", exerciseAngina);
+        clinicDataJson.addProperty("old_peak", oldPeak);
+        clinicDataJson.addProperty("st_slope", stSlope);
+
 
         String userName = null;
         HttpSession usersession = request.getSession(false);
         userName = usersession.getAttribute("email").toString();
-        categoryJson.addProperty("crated_by", userName);
+        clinicDataJson.addProperty("created_by", userName);
 
         // Send a POST request to the backend resource file
-        URL url = new URL("http://localhost:8080/BackendComponents_war_exploded/api/patient");
+        URL url = new URL("http://localhost:8080/BackendComponents_war_exploded/api/clinic");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
 
         OutputStream os = connection.getOutputStream();
-        os.write(categoryJson.toString().getBytes());
+        os.write(clinicDataJson.toString().getBytes());
         os.flush();
         // os.close();
 
@@ -85,7 +101,7 @@ public class PatientRegistrationServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
             out.println("<script>alert('Failed: " + responseBody + "');</script>"); // alert message with error code
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>"); // stay on the same page
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>"); // stay on the same page
             out.println("</body></html>");
             out.close();
         }
@@ -94,16 +110,16 @@ public class PatientRegistrationServlet extends HttpServlet {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<script>alert('Patient registration successful!');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>alert('Clinic data registration successful!');</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
         } else {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<script>alert('Error registering Patient');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>alert('Error registering clinic data');</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
         }

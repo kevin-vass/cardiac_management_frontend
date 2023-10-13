@@ -84,6 +84,7 @@
                     <h6 class="collapse-header">Patient Management:</h6>
                     <a class="collapse-item" href="PatientInfo.jsp">Patient Information</a>
                     <a class="collapse-item" href="AddNewPatient.jsp">Add New Patient</a>
+                    <a class="collapse-item" href="ViewClinicData.jsp">View Clinic Data</a>
                 </div>
             </div>
         </li>

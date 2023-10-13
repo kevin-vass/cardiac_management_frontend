@@ -1,65 +1,60 @@
 package com.example.frontend_components;
 
+
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@WebServlet(name = "PatientRegistrationServlet", value = "/patient-registration")
-public class PatientRegistrationServlet extends HttpServlet {
+@WebServlet(name = "PatientEditServlet", value = "/patient-edit")
+public class PatientEditServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
 
         // Extract the category details from the form submission
-        String patientName = request.getParameter("name");
-        String address = request.getParameter("address");
-        Integer phone = Integer.valueOf(request.getParameter("contact"));
-        String birthdate = request.getParameter("birthdate");
-        String gender = request.getParameter("gender");
+        String patient_id = request.getParameter("idedit");
+        String name = request.getParameter("nameedit");
+        String address = request.getParameter("addressedit");
+        Integer telephone = Integer.valueOf(request.getParameter("telephoneedit"));
+
 
         // Check if both fields are not empty
-        if (patientName == null) {
+        if (name == null) {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
             out.println("<script>alert('All fields are required');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
             return;
         }
 
         // Create a JSON object containing the category details
-        JsonObject categoryJson = new JsonObject();
-        categoryJson.addProperty("name", patientName);
-        categoryJson.addProperty("address", address);
-        categoryJson.addProperty("telephone", phone);
-        categoryJson.addProperty("birthdate", birthdate);
-        categoryJson.addProperty("gender", gender);
+        JsonObject patientJson = new JsonObject();
+        patientJson.addProperty("patient_id", patient_id);
+        patientJson.addProperty("name", name);
+        patientJson.addProperty("address", address);
+        patientJson.addProperty("telephone", telephone);
 
-        String userName = null;
-        HttpSession usersession = request.getSession(false);
-        userName = usersession.getAttribute("email").toString();
-        categoryJson.addProperty("crated_by", userName);
 
         // Send a POST request to the backend resource file
-        URL url = new URL("http://localhost:8080/BackendComponents_war_exploded/api/patient");
+        URL url = new URL("http://localhost:8080/BackendComponents_war_exploded/api/patient/update/" + patient_id);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
 
         OutputStream os = connection.getOutputStream();
-        os.write(categoryJson.toString().getBytes());
+        os.write(patientJson.toString().getBytes());
         os.flush();
         // os.close();
 
@@ -85,7 +80,7 @@ public class PatientRegistrationServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
             out.println("<script>alert('Failed: " + responseBody + "');</script>"); // alert message with error code
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>"); // stay on the same page
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>"); // stay on the same page
             out.println("</body></html>");
             out.close();
         }
@@ -94,16 +89,16 @@ public class PatientRegistrationServlet extends HttpServlet {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<script>alert('Patient registration successful!');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>alert('Patient update successful!');</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
         } else {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<script>alert('Error registering Patient');</script>");
-            out.println("<script>window.location.href='AddNewPatient.jsp';</script>");
+            out.println("<script>alert('Error updating patient');</script>");
+            out.println("<script>window.location.href='PatientInfo.jsp';</script>");
             out.println("</body></html>");
             out.close();
         }
