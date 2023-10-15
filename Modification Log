@@ -8,3 +8,4 @@ Tag                 Date                    Description
 006                 2023-10-11              Added the Heart Decease prediction for the web application
 007                 2023-10-12              Added all the functions for user in view, insert, edit and delete
 008                 2023-10-13              Added the patient view, edit and clinic record add functions
+009                 2023-10-16              Created all the user functionalities in the system
